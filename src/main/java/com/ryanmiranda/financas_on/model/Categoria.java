@@ -1,0 +1,38 @@
+package com.ryanmiranda.financas_on.model;
+
+import com.ryanmiranda.financas_on.model.DTOs.categoriaDTO.AtualizacaoCategoria;
+import com.ryanmiranda.financas_on.model.DTOs.categoriaDTO.CadastroCategoria;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "categoria")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Categoria {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String nome;
+    @Enumerated(EnumType.STRING)
+    private Tipo tipo;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
+    public Categoria(CadastroCategoria cadastroCategoria) {
+        this.nome = cadastroCategoria.nome();
+        this.tipo = cadastroCategoria.tipo();
+        this.usuario = cadastroCategoria.usuario();
+    }
+
+    public void atualizarCategoria(AtualizacaoCategoria atualizacaoCategoria) {
+        this.nome = atualizacaoCategoria.nome();
+        this.tipo = atualizacaoCategoria.tipo();
+    }
+}
