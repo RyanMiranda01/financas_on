@@ -1,7 +1,7 @@
 package com.ryanmiranda.financas_on.model;
 
-import com.ryanmiranda.financas_on.model.DTOs.categoriaDTO.AtualizacaoCategoria;
-import com.ryanmiranda.financas_on.model.DTOs.categoriaDTO.CadastroCategoria;
+import com.ryanmiranda.financas_on.DTOs.categoriaDTO.AtualizacaoCategoria;
+import com.ryanmiranda.financas_on.DTOs.categoriaDTO.CadastroCategoria;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

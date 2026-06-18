@@ -1,4 +1,4 @@
-package com.ryanmiranda.financas_on.model.DTOs.categoriaDTO;
+package com.ryanmiranda.financas_on.DTOs.categoriaDTO;
 
 import com.ryanmiranda.financas_on.model.Tipo;
 import jakarta.validation.constraints.NotBlank;

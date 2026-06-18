@@ -1,8 +1,8 @@
 package com.ryanmiranda.financas_on.model;
 
 
-import com.ryanmiranda.financas_on.model.DTOs.UsuarioDTO.AtualizacaoUsuario;
-import com.ryanmiranda.financas_on.model.DTOs.UsuarioDTO.CadastroUsuario;
+import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.AtualizacaoUsuario;
+import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.CadastroUsuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

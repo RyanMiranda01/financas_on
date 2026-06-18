@@ -1,8 +1,8 @@
 package com.ryanmiranda.financas_on.service;
 
-import com.ryanmiranda.financas_on.model.DTOs.UsuarioDTO.AtualizacaoUsuario;
-import com.ryanmiranda.financas_on.model.DTOs.UsuarioDTO.CadastroUsuario;
-import com.ryanmiranda.financas_on.model.DTOs.UsuarioDTO.ListarDadosUsuario;
+import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.AtualizacaoUsuario;
+import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.CadastroUsuario;
+import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.ListarDadosUsuario;
 import com.ryanmiranda.financas_on.model.Usuario;
 import com.ryanmiranda.financas_on.repository.UsuarioRepository;
 import jakarta.validation.Valid;

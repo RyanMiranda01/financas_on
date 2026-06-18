@@ -1,4 +1,4 @@
-package com.ryanmiranda.financas_on.model.DTOs.UsuarioDTO;
+package com.ryanmiranda.financas_on.DTOs.UsuarioDTO;
 
 import com.ryanmiranda.financas_on.model.Usuario;
 

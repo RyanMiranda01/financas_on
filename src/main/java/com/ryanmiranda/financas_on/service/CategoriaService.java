@@ -1,9 +1,9 @@
 package com.ryanmiranda.financas_on.service;
 
 import com.ryanmiranda.financas_on.model.Categoria;
-import com.ryanmiranda.financas_on.model.DTOs.categoriaDTO.AtualizacaoCategoria;
-import com.ryanmiranda.financas_on.model.DTOs.categoriaDTO.CadastroCategoria;
-import com.ryanmiranda.financas_on.model.DTOs.categoriaDTO.ListarCategoria;
+import com.ryanmiranda.financas_on.DTOs.categoriaDTO.AtualizacaoCategoria;
+import com.ryanmiranda.financas_on.DTOs.categoriaDTO.CadastroCategoria;
+import com.ryanmiranda.financas_on.DTOs.categoriaDTO.ListarCategoria;
 import com.ryanmiranda.financas_on.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
