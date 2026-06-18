@@ -8,12 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "categoria")
+@Table(name = "categorias")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Categoria {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -25,14 +25,18 @@ public class Categoria {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    public Categoria(CadastroCategoria cadastroCategoria) {
+    public Categoria(CadastroCategoria cadastroCategoria, Usuario usuario) {
         this.nome = cadastroCategoria.nome();
         this.tipo = cadastroCategoria.tipo();
-        this.usuario = cadastroCategoria.usuario();
+        this.usuario = usuario;
     }
 
     public void atualizarCategoria(AtualizacaoCategoria atualizacaoCategoria) {
-        this.nome = atualizacaoCategoria.nome();
-        this.tipo = atualizacaoCategoria.tipo();
+        if (atualizacaoCategoria.nome() != null) {
+            this.nome = atualizacaoCategoria.nome();
+        }
+        if (atualizacaoCategoria.tipo() != null) {
+            this.tipo = atualizacaoCategoria.tipo();
+        }
     }
 }

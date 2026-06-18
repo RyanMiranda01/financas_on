@@ -4,6 +4,7 @@ package com.ryanmiranda.financas_on.model;
 import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.AtualizacaoUsuario;
 import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.CadastroUsuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,10 +1,13 @@
 package com.ryanmiranda.financas_on.service;
 
+import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.ListarDadosUsuario;
 import com.ryanmiranda.financas_on.model.Categoria;
 import com.ryanmiranda.financas_on.DTOs.categoriaDTO.AtualizacaoCategoria;
 import com.ryanmiranda.financas_on.DTOs.categoriaDTO.CadastroCategoria;
 import com.ryanmiranda.financas_on.DTOs.categoriaDTO.ListarCategoria;
+import com.ryanmiranda.financas_on.model.Usuario;
 import com.ryanmiranda.financas_on.repository.CategoriaRepository;
+import com.ryanmiranda.financas_on.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,16 +18,35 @@ public class CategoriaService {
 
     @Autowired
     CategoriaRepository categoriaRepository;
+    @Autowired
+    UsuarioRepository usuarioRepository;
 
     public boolean cadastrarCategoria(CadastroCategoria cadastroCategoria){
-       categoriaRepository.save(new Categoria(cadastroCategoria));
+
+        if(verificarCategoria(cadastroCategoria.nome())) {
+            return false;
+        }
+
+        Usuario usuario = usuarioRepository.getReferenceById(cadastroCategoria.usuarioId());
+
+       categoriaRepository.save(new Categoria(cadastroCategoria, usuario));
        return true;
     }
 
     public boolean editarCategoria(Long id, AtualizacaoCategoria atualizacaoCategoria){
+
+        if(verificarCategoria(atualizacaoCategoria.nome())) {
+            return false;
+        }
+
         var categoria = categoriaRepository.getReferenceById(id);
-        categoria.atualizarCategoria(atualizacaoCategoria);
-        return true;
+
+        if(categoria == null){
+            return false;
+        }else {
+            categoria.atualizarCategoria(atualizacaoCategoria);
+            return true;
+        }
     }
 
     public boolean deletarCategoria(Long id){
@@ -36,6 +58,19 @@ public class CategoriaService {
         return categoriaRepository.findAll(pagina).map(ListarCategoria::new);
     }
 
+    public ListarCategoria listarCategoriaId(Long id){
+        return categoriaRepository.findById(id).map(ListarCategoria::new)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrado"));
+    }
+
+    public boolean verificarCategoria(String nome){
+        boolean existe = categoriaRepository.existsByNome(nome);
+        if(existe){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
 
 }
