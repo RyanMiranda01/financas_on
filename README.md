@@ -90,8 +90,17 @@ src/main/java/com/ryanmiranda/financas_on
 │   ├── Categoria.java
 │   ├── Transacao.java
 │   ├── Tipo.java
-│   └── DTOs
-│
+│   
+├── DTOs
+│   ├── CategoriaDTO
+│   │   ├── AtualizacaoCategoria
+│   │   ├── CadastroCategoria
+│   │   └── ListarCategoria
+│   └── UsuarioDTO
+│       ├── AtualizacaoUsuario
+│       ├── CadastroUsuario
+│       └── ListarDadosUsuario
+|
 └── FinancasOnApplication.java
 ```
 
