@@ -1,114 +1,92 @@
-# 💰 Finanças On
+# Finanças On
 
-API REST em desenvolvimento para gerenciamento financeiro pessoal, criada com Java e Spring Boot.
+API REST para controle financeiro pessoal, desenvolvida com Java, Spring Boot e MySQL.
 
-O projeto ainda não está finalizado e atualmente estrutura a base para cadastro de usuários, categorias e transações, utilizando persistência em MySQL, validações de entrada, JPA/Hibernate e versionamento de banco com Flyway.
+> Status: em desenvolvimento.
+>
+> Este projeto ainda não está finalizado e segue em evolução. A base atual já possui CRUD de usuários, CRUD de categorias, validações, persistência com JPA/Hibernate e versionamento de banco com Flyway. As funcionalidades de transações, autenticação, relatórios e dashboard financeiro ainda fazem parte do roadmap.
 
-> Status: 🚧 Em desenvolvimento
+## Sobre o projeto
 
----
+O Finanças On é uma API back-end criada para organizar dados financeiros pessoais. A ideia é permitir que um usuário cadastre suas categorias financeiras, registre receitas e despesas e acompanhe sua movimentação ao longo do tempo.
 
-## 📖 Sobre o Projeto
+Nesta fase, o projeto está focado em construir uma base sólida para a API:
 
-O **Finanças On** nasceu como uma API Back-End para controlar dados financeiros de usuários.
+- Organização em camadas: controllers, services, repositories, DTOs e models.
+- Persistência de dados com Spring Data JPA e MySQL.
+- Versionamento do banco de dados com Flyway.
+- Validação de entrada com Jakarta Validation.
+- Estrutura inicial para futuras transações financeiras.
 
-A aplicação já possui uma arquitetura em camadas, separando responsabilidades entre Controllers, Services, Repositories, Models e DTOs, facilitando a evolução do projeto para funcionalidades mais avançadas como:
+## Tecnologias utilizadas
 
-* Controle de receitas e despesas
-* Filtros por período
-* Controle de saldo
-* Autenticação e autorização
-* Dashboard financeiro
-* Relatórios
+- Java 25
+- Spring Boot 4.1.0
+- Spring Web MVC
+- Spring Data JPA
+- Hibernate
+- Flyway
+- MySQL
+- Jakarta Validation
+- Lombok
+- Maven
 
----
-
-## 🚀 Tecnologias Utilizadas
-
-* Java 25
-* Spring Boot 4.1.0
-* Spring Web MVC
-* Spring Data JPA
-* Hibernate
-* Flyway
-* MySQL
-* Bean Validation
-* Lombok
-* Maven
-
----
-
-## ✅ Funcionalidades Implementadas
+## Funcionalidades implementadas
 
 ### Usuários
 
-* Cadastro de usuários
-* Listagem paginada
-* Busca por ID
-* Atualização de dados
-* Exclusão de usuários
+- Cadastro de usuário.
+- Listagem paginada de usuários.
+- Busca de usuário por ID.
+- Atualização de dados do usuário.
+- Exclusão de usuário.
+- Validação de e-mail único.
 
 ### Categorias
 
-* Estrutura inicial implementada
-* Relacionamento com usuário
+- Cadastro de categoria.
+- Listagem paginada de categorias.
+- Busca de categoria por ID.
+- Atualização de categoria.
+- Exclusão de categoria.
+- Associação da categoria a um usuário.
+- Tipos de categoria: `RECEITA` e `DESPESA`.
 
 ### Transações
 
-* Modelagem inicial criada
-* Estrutura preparada para receitas e despesas
+- Modelagem inicial da entidade `Transacao`.
+- Associação prevista com usuário e categoria.
+- Campos iniciais para descrição, valor, tipo e data.
 
-### Banco de Dados
-
-* Migrations com Flyway
-* Versionamento automático do banco
-
-### Validações
-
-* Validação de dados utilizando Jakarta Validation
-
----
-
-## 📂 Estrutura do Projeto
+## Estrutura do projeto
 
 ```text
 src/main/java/com/ryanmiranda/financas_on
-
 ├── controller
+│   ├── CategoriaController.java
 │   └── UsuarioController.java
-│
 ├── service
-│   ├── UsuarioService.java
-│   └── CategoriaService.java
-│
+│   ├── CategoriaService.java
+│   └── UsuarioService.java
 ├── repository
-│   ├── UsuarioRepository.java
-│   └── CategoriaRepository.java
-│
+│   ├── CategoriaRepository.java
+│   └── UsuarioRepository.java
 ├── model
-│   ├── Usuario.java
 │   ├── Categoria.java
-│   ├── Transacao.java
 │   ├── Tipo.java
-│   
+│   ├── Transacao.java
+│   └── Usuario.java
 ├── DTOs
-│   ├── CategoriaDTO
-│   │   ├── AtualizacaoCategoria
-│   │   ├── CadastroCategoria
-│   │   └── ListarCategoria
+│   ├── categoriaDTO
 │   └── UsuarioDTO
-│       ├── AtualizacaoUsuario
-│       ├── CadastroUsuario
-│       └── ListarDadosUsuario
-|
 └── FinancasOnApplication.java
 ```
 
----
+## Endpoints
 
-## 🔗 Endpoints de Usuário
+### Usuários
 
-### Base URL
+Base URL:
 
 ```http
 http://localhost:8080/financason/usuario
@@ -116,15 +94,13 @@ http://localhost:8080/financason/usuario
 
 | Método | Endpoint      | Descrição            |
 | ------ | ------------- | -------------------- |
-| POST   | /cadastrar    | Cadastra um usuário  |
-| GET    | /listar       | Lista usuários       |
-| GET    | /listar/{id}  | Busca usuário por ID |
-| PUT    | /editar/{id}  | Atualiza usuário     |
-| DELETE | /deletar/{id} | Remove usuário       |
+| POST   | `/cadastrar`  | Cadastra um usuário  |
+| GET    | `/listar`     | Lista usuários       |
+| GET    | `/listar/{id}` | Busca usuário por ID |
+| PUT    | `/editar/{id}` | Atualiza usuário     |
+| DELETE | `/deletar/{id}` | Remove usuário      |
 
----
-
-## 📝 Exemplo de Cadastro
+Exemplo de cadastro:
 
 ```json
 {
@@ -134,55 +110,76 @@ http://localhost:8080/financason/usuario
 }
 ```
 
----
+### Categorias
 
-## ⚙️ Como Executar
+Base URL:
+
+```http
+http://localhost:8080/financason/categoria
+```
+
+| Método | Endpoint       | Descrição              |
+| ------ | -------------- | ---------------------- |
+| POST   | `/cadastrar`   | Cadastra uma categoria |
+| GET    | `/listar`      | Lista categorias       |
+| GET    | `/listar/{id}` | Busca categoria por ID |
+| PUT    | `/editar/{id}` | Atualiza categoria     |
+| DELETE | `/deletar/{id}` | Remove categoria       |
+
+Exemplo de cadastro:
+
+```json
+{
+  "nome": "Salário",
+  "tipo": "RECEITA",
+  "usuarioId": 1
+}
+```
+
+## Como executar
 
 ### Pré-requisitos
 
-* Java 25
-* MySQL
-* Maven ou Maven Wrapper
+- Java 25
+- MySQL
+- Maven ou Maven Wrapper
 
-### Criar Banco
+### Clone o repositório
+
+```bash
+git clone https://github.com/RyanMiranda01/financas_on.git
+cd financas_on
+```
+
+### Crie o banco de dados
 
 ```sql
 CREATE DATABASE financas_on;
 ```
 
-### Configuração
+### Configure a conexão
 
-No arquivo:
-
-```text
-src/main/resources/application.properties
-```
-
-Configure:
+Atualize o arquivo `src/main/resources/application.properties` com as credenciais do seu ambiente local:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost/financas_on
-spring.datasource.username=SEU USUARIO
-spring.datasource.password=SUA SENHA
+spring.datasource.username=SEU_USUARIO
+spring.datasource.password=SUA_SENHA
 ```
 
-### Executar a Aplicação
+### Execute a aplicação
 
-#### Windows
+No Windows:
 
 ```bash
 ./mvnw.cmd spring-boot:run
 ```
 
-#### Linux/macOS
+No Linux/macOS:
 
 ```bash
 ./mvnw spring-boot:run
 ```
-
----
-
-## 🌐 Aplicação
 
 A API ficará disponível em:
 
@@ -190,22 +187,35 @@ A API ficará disponível em:
 http://localhost:8080
 ```
 
----
+## Testes
 
-## 🎯 Próximos Passos
+Para executar os testes:
 
-* Criar Controller de Categorias
-* Criar Controller de Transações
-* Implementar cadastro de receitas e despesas
-* Implementar filtros por período
-* Implementar cálculo de saldo
-* Adicionar paginação
-* Implementar tratamento global de exceções
-* Adicionar autenticação JWT
-* Documentar API com Swagger/OpenAPI
-* Criar testes unitários
-* Criar testes de integração
-* Configurar Docker
-* Realizar deploy
+```bash
+./mvnw.cmd test
+```
 
+ou, no Linux/macOS:
 
+```bash
+./mvnw test
+```
+
+## Roadmap
+
+- Implementar CRUD de transações.
+- Criar regras para receitas e despesas.
+- Calcular saldo do usuário.
+- Adicionar filtros por período, categoria e tipo.
+- Implementar tratamento global de exceções.
+- Melhorar os retornos HTTP da API.
+- Criptografar senhas antes de salvar no banco.
+- Implementar autenticação e autorização.
+- Documentar a API com Swagger/OpenAPI.
+- Adicionar testes unitários e de integração.
+- Criar configuração com variáveis de ambiente.
+- Configurar Docker para facilitar a execução local.
+
+## Observações
+
+Este repositório representa um projeto em construção e tem como objetivo demonstrar evolução prática em desenvolvimento back-end com Java e Spring Boot. Algumas decisões ainda serão melhoradas conforme novas funcionalidades forem adicionadas.

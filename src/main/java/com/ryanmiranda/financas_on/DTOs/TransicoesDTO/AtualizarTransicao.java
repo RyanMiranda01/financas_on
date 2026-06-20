@@ -1,4 +1,9 @@
 package com.ryanmiranda.financas_on.DTOs.TransicoesDTO;
 
-public record AtualizarTransicao() {
+import java.math.BigDecimal;
+
+public record AtualizarTransicao(
+        String descricao,
+        BigDecimal valor
+) {
 }

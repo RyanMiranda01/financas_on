@@ -32,18 +32,11 @@ public class Usuario {
     List<Transacao> transacoes;
 
 
-    @PrePersist
-    public void prePersist() {
-        if (dataCriacao == null) {
-            dataCriacao = LocalDate.now();
-        }
-    }
-
-
     public Usuario(CadastroUsuario dadosCadastroUsuario) {
         this.nome = dadosCadastroUsuario.nome();
         this.email = dadosCadastroUsuario.email();
         this.senha = dadosCadastroUsuario.senha();
+        this.dataCriacao = LocalDate.now();
     }
 
     public void atualizarDados(AtualizacaoUsuario dadoAtualizacao) {
