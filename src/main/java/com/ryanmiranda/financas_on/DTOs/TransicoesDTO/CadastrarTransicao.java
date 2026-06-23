@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public record CadastrarTransicao(
         @NotBlank
@@ -13,6 +14,8 @@ public record CadastrarTransicao(
         BigDecimal valor,
         @NotNull
         Tipo tipo,
+        @NotNull
+        LocalDate data,
         @NotNull
         Long id_categoria,
         @NotNull

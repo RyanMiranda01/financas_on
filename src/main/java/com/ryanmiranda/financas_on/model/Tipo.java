@@ -4,6 +4,6 @@ public enum Tipo {
     RECEITA("receita"),
     DESPESA("despesa");
 
-    Tipo(String tipo){
+    Tipo(String ex){
     }
 }

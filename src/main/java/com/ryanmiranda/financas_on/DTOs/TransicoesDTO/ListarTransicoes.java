@@ -18,4 +18,5 @@ public record ListarTransicoes(
     public ListarTransicoes(Transacao transacao) {
         this(transacao.getDescricao(), transacao.getValor(), transacao.getTipo(), transacao.getData(), transacao.getUsuario().getId(), transacao.getCategoria().getId());
     }
+
 }

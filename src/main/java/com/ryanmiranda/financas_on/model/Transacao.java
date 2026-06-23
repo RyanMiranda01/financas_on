@@ -40,7 +40,7 @@ public class Transacao {
         this.descricao = cadastrarTransicao.descricao();
         this.valor = cadastrarTransicao.valor();
         this.tipo = cadastrarTransicao.tipo();
-        this.data = LocalDate.now();
+        this.data = cadastrarTransicao.data();
         this.categoria = categoria;
         this.usuario = usuario;
     }
@@ -54,6 +54,7 @@ public class Transacao {
     }
 
     public void atualizarTransicao(AtualizarTransicao atualizarTransicao) {
+
         if(atualizarTransicao.descricao() != null){
             this.descricao = atualizarTransicao.descricao();
         }

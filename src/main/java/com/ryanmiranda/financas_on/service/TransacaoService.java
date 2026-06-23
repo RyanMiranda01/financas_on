@@ -4,6 +4,7 @@ import com.ryanmiranda.financas_on.DTOs.TransicoesDTO.AtualizarTransicao;
 import com.ryanmiranda.financas_on.DTOs.TransicoesDTO.CadastrarTransicao;
 import com.ryanmiranda.financas_on.DTOs.TransicoesDTO.ListarTransicoes;
 import com.ryanmiranda.financas_on.model.Categoria;
+import com.ryanmiranda.financas_on.model.Tipo;
 import com.ryanmiranda.financas_on.model.Transacao;
 import com.ryanmiranda.financas_on.model.Usuario;
 import com.ryanmiranda.financas_on.repository.CategoriaRepository;
@@ -13,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransacaoService {
@@ -28,6 +33,10 @@ public class TransacaoService {
 
         Usuario usuario = usuarioRepository.getReferenceById(cadastrarTransicao.id_usuario());
         Categoria categoria = categoriaRepository.getReferenceById(cadastrarTransicao.id_categoria());
+
+        if(cadastrarTransicao.valor().compareTo(BigDecimal.ZERO) <= 0 || categoria == null || usuario == null || categoria.getUsuario().getId() != usuario.getId()){
+            return false;
+        }
 
         transacoesRepository.save(new Transacao(cadastrarTransicao, categoria, usuario));
         return true;
@@ -53,4 +62,72 @@ public class TransacaoService {
     public Page<ListarTransicoes> listarTransicoesPage(Pageable pagina) {
         return transacoesRepository.findAll(pagina).map(ListarTransicoes::new);
     }
+
+    public ListarTransicoes listarTransicoesId(Long id){
+        return transacoesRepository.findById(id).map(ListarTransicoes::new)
+                .orElseThrow(() -> new RuntimeException("Trasação não encontrado!"));
+    }
+
+    public Page<ListarTransicoes> listarTransicoesPorMes(int mes, Pageable pageable){
+        return transacoesRepository.buscarPorMes(mes, pageable).map(ListarTransicoes::new);
+    }
+
+    public Page<ListarTransicoes> listarTransicoesPorAno(int ano, Pageable pageable){
+        return  transacoesRepository.buscarPorAno(ano, pageable).map(ListarTransicoes::new);
+    }
+
+    public Page<ListarTransicoes> listarTransicoesPorCategoria(String categoria, Pageable pageable){
+        return transacoesRepository.buscarPorCategoria(categoria, pageable).map(ListarTransicoes::new);
+    }
+
+    public Page<ListarTransicoes> listarPoripo(String tipo, Pageable pag){
+        Tipo tipoEscolhido = Tipo.valueOf(tipo.toUpperCase());
+        return transacoesRepository.findByTipo(tipoEscolhido, pag).map(ListarTransicoes::new);
+    }
+
+    public Page<ListarTransicoes> valorMinimo(double valor, Pageable pageable){
+        return transacoesRepository.buscarPorValorMinimo(valor, pageable).map(ListarTransicoes::new);
+    }
+
+    public Page<ListarTransicoes> valorMaximo(double valor, Pageable pageable) {
+        return transacoesRepository.buscarPorValorMaximo(valor, pageable).map(ListarTransicoes::new);
+    }
+
+    public BigDecimal saldoReceitas(){
+
+        Tipo tipoEscolhido = Tipo.valueOf("RECEITA");
+
+        List<Transacao> list = transacoesRepository.findByTipo(tipoEscolhido);
+
+        BigDecimal valorReceita = BigDecimal.ZERO;
+
+        for(Transacao t : list){
+            valorReceita = valorReceita.add(t.getValor());
+        }
+
+        return valorReceita;
+
+    }
+    public BigDecimal saldoDespesas(){
+
+        Tipo tipoEscolhido = Tipo.valueOf("DESPESA");
+
+        List<Transacao> list = transacoesRepository.findByTipo(tipoEscolhido);
+
+        BigDecimal valorDespesa= BigDecimal.ZERO;
+
+        for(Transacao t : list){
+            valorDespesa = valorDespesa.add(t.getValor());
+        }
+
+        return valorDespesa;
+
+    }
+
+    public BigDecimal saldoDaConta(){
+        BigDecimal saldoConta = saldoReceitas().subtract(saldoDespesas());
+
+        return saldoConta;
+    }
+
 }
