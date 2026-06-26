@@ -1,207 +1,299 @@
-# Finanças On
+# 💰 Finanças On
+
 
 ### API REST para controle financeiro pessoal com Java e Spring Boot
 
-[![Java](https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.java.com/)
-[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)](https://maven.apache.org/)
+[![Java](https://img.shields.io/badge/Java-24-ED8B00?style=for-the-badge\&logo=openjdk\&logoColor=white)](https://www.java.com/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1-6DB33F?style=for-the-badge\&logo=springboot\&logoColor=white)](https://spring.io/projects/spring-boot)
+[![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge\&logo=mysql\&logoColor=white)](https://www.mysql.com/)
+[![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge\&logo=apachemaven\&logoColor=white)](https://maven.apache.org/)
 
-
-**Status:** em desenvolvimento — CRUDs, paginação, filtros e cálculo de saldos implementados.
-
-</div>
+> **🚧 Status:** Em desenvolvimento. CRUDs, paginação, filtros, cálculo de saldo, DTOs de detalhamento e tratamento inicial de erros implementados.
 
 ---
 
-## Sobre o projeto
+# 📖 Sobre o Projeto
 
-O **Finanças On** é uma API REST de gerenciamento financeiro pessoal. A aplicação permite cadastrar usuários, organizar receitas e despesas por categoria, registrar transações, consultar movimentações com diferentes filtros e calcular o saldo financeiro.
+O **Finanças On** é uma API REST para gerenciamento financeiro pessoal desenvolvida com **Java** e **Spring Boot**.
 
-O projeto foi construído para praticar uma arquitetura back-end próxima de um cenário real, com separação de responsabilidades entre controllers, services, repositories, DTOs e entidades, persistência relacional e versionamento do banco de dados.
+A aplicação permite cadastrar usuários, organizar receitas e despesas por categoria, registrar transações, consultar movimentações utilizando diversos filtros e calcular automaticamente o saldo financeiro.
 
-## Destaques
+O projeto foi criado com foco em boas práticas de desenvolvimento Back-End, utilizando uma arquitetura em camadas semelhante à encontrada em aplicações reais.
 
-- CRUD de usuários, categorias e transações.
-- Listagens paginadas com Spring Data.
-- Filtros por mês, ano, categoria, tipo e faixa de valor.
-- Cálculo de total de receitas, total de despesas e saldo final.
-- Relacionamentos entre usuário, categoria e transação.
-- Validações com Jakarta Validation e regras de negócio na camada de serviço.
-- Valores monetários representados com `BigDecimal`.
-- Banco MySQL versionado por migrations do Flyway.
-- Uso de DTOs para separar o contrato da API das entidades persistidas.
+Nesta versão também foram implementadas melhorias no contrato HTTP da API, incluindo:
 
-## Arquitetura
+* DTOs de detalhamento;
+* ResponseEntity;
+* Status **201 Created** em cadastros;
+* Header **Location**;
+* Status **204 No Content** em exclusões;
+* Tratamento global inicial de erros.
+
+---
+
+# ✨ Destaques
+
+* ✅ CRUD de Usuários
+* ✅ CRUD de Categorias
+* ✅ CRUD de Transações
+* ✅ Paginação com Spring Data
+* ✅ Filtros por:
+
+  * mês
+  * ano
+  * categoria
+  * tipo
+  * faixa de valores
+* ✅ Cálculo de receitas
+* ✅ Cálculo de despesas
+* ✅ Saldo financeiro
+* ✅ DTOs
+* ✅ Validações com Jakarta Validation
+* ✅ BigDecimal para valores monetários
+* ✅ Flyway Migration
+* ✅ Tratamento global de erros
+* ✅ ResponseEntity
+
+---
+
+# 🏗 Arquitetura
 
 ```mermaid
 flowchart LR
-    Client["Cliente HTTP"] --> Controller["Controllers REST"]
-    Controller --> Service["Services / regras de negócio"]
-    Service --> Repository["Repositories Spring Data JPA"]
-    Repository --> DB[("MySQL")]
-    Flyway["Flyway migrations"] --> DB
-    DTO["DTOs + validação"] --> Controller
+
+Cliente --> Controller
+Controller --> Service
+Service --> Repository
+Repository --> MySQL
+
+DTO --> Controller
+Flyway --> MySQL
 ```
 
-O fluxo de uma requisição passa pela camada HTTP, pelas regras de negócio e pela persistência. Os DTOs definem os dados de entrada e saída, enquanto o Flyway mantém o esquema do banco reproduzível.
+Fluxo da aplicação:
 
-## Modelo de dados
+```
+Cliente HTTP
+      ↓
+ Controller
+      ↓
+ Service
+      ↓
+ Repository
+      ↓
+   MySQL
+```
+
+Os DTOs definem o contrato da API e o Flyway mantém o banco versionado.
+
+---
+
+# 🗄 Modelo de Dados
 
 ```mermaid
 erDiagram
-    USUARIO ||--o{ CATEGORIA : possui
-    USUARIO ||--o{ TRANSACAO : registra
-    CATEGORIA ||--o{ TRANSACAO : classifica
 
-    USUARIO {
-        bigint id PK
-        varchar nome
-        varchar email UK
-        varchar senha
-        date data_criacao
-    }
+USUARIO ||--o{ CATEGORIA : possui
+USUARIO ||--o{ TRANSACAO : registra
+CATEGORIA ||--o{ TRANSACAO : classifica
 
-    CATEGORIA {
-        bigint id PK
-        varchar nome
-        varchar tipo
-        bigint usuario_id FK
-    }
+USUARIO{
+    bigint id
+    varchar nome
+    varchar email
+    varchar senha
+    date data_criacao
+}
 
-    TRANSACAO {
-        bigint id PK
-        varchar descricao
-        decimal valor
-        varchar tipo
-        date data
-        bigint usuario_id FK
-        bigint categoria_id FK
-    }
+CATEGORIA{
+    bigint id
+    varchar nome
+    varchar tipo
+    bigint usuario_id
+}
+
+TRANSACAO{
+    bigint id
+    varchar descricao
+    decimal valor
+    varchar tipo
+    date data
+    bigint usuario_id
+    bigint categoria_id
+}
 ```
 
-Os tipos financeiros aceitos são `RECEITA` e `DESPESA`.
+Tipos aceitos:
 
-## Tecnologias
+```
+RECEITA
+DESPESA
+```
 
-| Tecnologia | Uso no projeto |
-|---|---|
-| Java 25 | Linguagem principal |
-| Spring Boot 4.1 | Configuração e execução da aplicação |
-| Spring Web MVC | Endpoints REST |
-| Spring Data JPA / Hibernate | Persistência e consultas |
-| Jakarta Validation | Validação dos dados de entrada |
-| Flyway | Versionamento do banco de dados |
-| MySQL | Banco de dados relacional |
-| Lombok | Redução de código repetitivo nas entidades |
-| Maven / Maven Wrapper | Dependências, build e execução |
+---
 
-## Funcionalidades implementadas
+# 🚀 Tecnologias
 
-### Usuários
+| Tecnologia         | Utilização             |
+| ------------------ | ---------------------- |
+| Java 24            | Linguagem              |
+| Spring Boot        | Framework              |
+| Spring Web         | API REST               |
+| Spring Data JPA    | Persistência           |
+| Hibernate          | ORM                    |
+| MySQL              | Banco de dados         |
+| Flyway             | Versionamento do banco |
+| Jakarta Validation | Validações             |
+| Lombok             | Redução de boilerplate |
+| Maven              | Build e dependências   |
 
-- Cadastro de usuário.
-- Listagem paginada.
-- Consulta por ID.
-- Atualização de nome e e-mail.
-- Exclusão.
-- Validação do formato do e-mail.
-- Bloqueio de e-mail duplicado.
-- Registro automático da data de criação.
+---
 
-### Categorias
+# ✅ Funcionalidades
 
-- Cadastro de categoria vinculada a um usuário.
-- Classificação como `RECEITA` ou `DESPESA`.
-- Listagem paginada.
-- Consulta por ID.
-- Atualização e exclusão.
-- Bloqueio de categoria com nome duplicado.
+## 👤 Usuários
 
-### Transações
+* Cadastro
+* Listagem paginada
+* Consulta por ID
+* Atualização
+* Exclusão
+* Validação de e-mail
+* E-mail único
+* Data de criação automática
+* DTO de detalhamento
 
-- Cadastro vinculado a usuário e categoria.
-- Listagem paginada e consulta por ID.
-- Atualização de descrição e valor.
-- Exclusão.
-- Validação de valor maior que zero.
-- Validação de que a categoria pertence ao usuário informado.
-- Filtro por mês.
-- Filtro por ano.
-- Filtro por nome da categoria.
-- Filtro por tipo (`RECEITA` ou `DESPESA`).
-- Filtro por valor mínimo.
-- Filtro por valor máximo.
-- Totalização das receitas.
-- Totalização das despesas.
-- Cálculo do saldo final: receitas menos despesas.
+---
 
-### Banco de dados
+## 📂 Categorias
 
-- Criação das tabelas `usuario`, `categorias` e `transicoes`.
-- E-mail de usuário com restrição de unicidade.
-- Chaves estrangeiras entre usuários, categorias e transações.
-- Quatro migrations SQL executadas automaticamente pelo Flyway.
+* Cadastro
+* Listagem paginada
+* Consulta por ID
+* Atualização
+* Exclusão
+* Categoria vinculada ao usuário
+* Validação de duplicidade
+* Tipo RECEITA ou DESPESA
+* DTO de detalhamento
 
-## Endpoints da API
+---
 
-A URL base local é `http://localhost:8080`.
+## 💰 Transações
 
-### Usuários — `/financason/usuario`
+* Cadastro
+* Consulta
+* Atualização
+* Exclusão
+* Validação de valor
+* Categoria pertencente ao usuário
+* Filtro por mês
+* Filtro por ano
+* Filtro por categoria
+* Filtro por tipo
+* Filtro por valor mínimo
+* Filtro por valor máximo
+* Soma das receitas
+* Soma das despesas
+* Cálculo do saldo
+* DTO de detalhamento
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/cadastrar` | Cadastra um usuário |
-| `GET` | `/listar` | Lista usuários com paginação |
-| `GET` | `/listar/{id}` | Busca um usuário por ID |
-| `PUT` | `/editar/{id}` | Atualiza um usuário |
-| `DELETE` | `/deletar/{id}` | Exclui um usuário |
+---
 
-### Categorias — `/financason/categoria`
+## 🛢 Banco de Dados
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/cadastrar` | Cadastra uma categoria |
-| `GET` | `/listar` | Lista categorias com paginação |
-| `GET` | `/listar/{id}` | Busca uma categoria por ID |
-| `PUT` | `/editar/{id}` | Atualiza uma categoria |
-| `DELETE` | `/deletar/{id}` | Exclui uma categoria |
+* Tabela Usuario
+* Tabela Categorias
+* Tabela Transações
+* Chaves estrangeiras
+* Flyway Migration
 
-### Transações — `/financason/transacoes`
+---
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| `POST` | `/cadastrar` | Cadastra uma transação |
-| `GET` | `/listar` | Lista transações com paginação |
-| `GET` | `/listar/{id}` | Busca uma transação por ID |
-| `PUT` | `/editar/{id}` | Atualiza descrição e valor |
-| `DELETE` | `/deletar/{id}` | Exclui uma transação |
-| `GET` | `/listar/mes/{mes}` | Filtra pelo número do mês |
-| `GET` | `/listar/ano/{ano}` | Filtra pelo ano |
-| `GET` | `/listar/categoria/{categoria}` | Filtra pelo nome da categoria |
-| `GET` | `/listar/tipo/{tipo}` | Filtra por receita ou despesa |
-| `GET` | `/listar/valormin/{valor}` | Retorna valores maiores ou iguais ao mínimo |
-| `GET` | `/listar/valormax/{valor}` | Retorna valores menores ou iguais ao máximo |
-| `GET` | `/saldo/receita` | Calcula o total de receitas |
-| `GET` | `/saldo/despesa` | Calcula o total de despesas |
-| `GET` | `/saldo/saldofinal` | Calcula receitas menos despesas |
+## 🌐 Respostas HTTP
 
-### Paginação e ordenação
+* 201 Created
+* 200 OK
+* 204 No Content
+* Header Location
+* Tratamento global de exceções
+* Respostas padronizadas
+* Stacktrace oculto
 
-As rotas de listagem e filtros paginados aceitam os parâmetros do Spring Data:
+---
+
+# 📌 Endpoints
+
+Base URL
+
+```http
+http://localhost:8080
+```
+
+---
+
+## 👤 Usuário
+
+```
+POST    /financason/usuario/cadastrar
+GET     /financason/usuario/listar
+GET     /financason/usuario/listar/{id}
+PUT     /financason/usuario/editar/{id}
+DELETE  /financason/usuario/deletar/{id}
+```
+
+---
+
+## 📂 Categoria
+
+```
+POST    /financason/categoria/cadastrar
+GET     /financason/categoria/listar
+GET     /financason/categoria/listar/{id}
+PUT     /financason/categoria/editar/{id}
+DELETE  /financason/categoria/deletar/{id}
+```
+
+---
+
+## 💰 Transações
+
+```
+POST    /financason/transacoes/cadastrar
+GET     /financason/transacoes/listar
+GET     /financason/transacoes/listar/{id}
+PUT     /financason/transacoes/editar/{id}
+DELETE  /financason/transacoes/deletar/{id}
+
+GET     /listar/mes/{mes}
+GET     /listar/ano/{ano}
+GET     /listar/categoria/{categoria}
+GET     /listar/tipo/{tipo}
+GET     /listar/valormin/{valor}
+GET     /listar/valormax/{valor}
+
+GET     /saldo/receita
+GET     /saldo/despesa
+GET     /saldo/saldofinal
+```
+
+---
+
+# 📄 Paginação
+
+As listagens utilizam paginação do Spring Data.
+
+Exemplo:
 
 ```http
 GET /financason/transacoes/listar?page=0&size=10&sort=data,desc
 ```
 
-## Exemplos de requisição
+---
 
-### Cadastrar usuário
+# 📨 Exemplos
 
-```http
-POST /financason/usuario/cadastrar
-Content-Type: application/json
-```
+## Cadastro de Usuário
 
 ```json
 {
@@ -211,32 +303,25 @@ Content-Type: application/json
 }
 ```
 
-### Cadastrar categoria
+---
 
-```http
-POST /financason/categoria/cadastrar
-Content-Type: application/json
-```
+## Cadastro de Categoria
 
 ```json
 {
   "nome": "Salário",
   "tipo": "RECEITA",
-  "usuarioId": 1,
-  "data": "2026-06-22"
+  "usuarioId": 1
 }
 ```
 
-### Cadastrar transação
+---
 
-```http
-POST /financason/transacoes/cadastrar
-Content-Type: application/json
-```
+## Cadastro de Transação
 
 ```json
 {
-  "descricao": "Salário mensal",
+  "descricao": "Salário Mensal",
   "valor": 4500.00,
   "tipo": "RECEITA",
   "data": "2026-06-22",
@@ -245,36 +330,38 @@ Content-Type: application/json
 }
 ```
 
-### Consultar despesas
+---
 
-```http
-GET /financason/transacoes/listar/tipo/DESPESA?page=0&size=10&sort=data,desc
-```
+# ⚙ Como Executar
 
-## Como executar
+## Pré-requisitos
 
-### Pré-requisitos
+* Java 24
+* MySQL
+* Git
+* Maven Wrapper
 
-- Java 25.
-- MySQL em execução.
-- Git. O Maven Wrapper já acompanha o projeto.
+---
 
-### 1. Clone o repositório
+## Clone
 
 ```bash
 git clone https://github.com/RyanMiranda01/financas_on.git
+
 cd financas_on
 ```
 
-### 2. Crie o banco
+---
+
+## Banco
 
 ```sql
 CREATE DATABASE financas_on;
 ```
 
-### 3. Configure a conexão
+---
 
-Atualize `src/main/resources/application.properties` com as credenciais do seu ambiente:
+## application.properties
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/financas_on
@@ -282,64 +369,104 @@ spring.datasource.username=SEU_USUARIO
 spring.datasource.password=SUA_SENHA
 ```
 
-Ao iniciar a aplicação, o Flyway cria e atualiza as tabelas automaticamente.
+---
 
-### 4. Inicie a API
+## Executar
 
-No Windows:
+Windows
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-No Linux ou macOS:
+Linux
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-A API ficará disponível em `http://localhost:8080`.
+---
 
-## Estrutura do projeto
+A aplicação ficará disponível em
+
+```http
+http://localhost:8080
+```
+
+---
+
+# 📂 Estrutura do Projeto
 
 ```text
 src
+│
 ├── main
-│   ├── java/com/ryanmiranda/financas_on
-│   │   ├── controller      # Camada HTTP
-│   │   ├── DTOs            # Contratos de entrada e saída
-│   │   ├── model           # Entidades JPA e enum Tipo
-│   │   ├── repository      # Persistência e consultas
-│   │   ├── service         # Regras de negócio
-│   │   └── FinancasOnApplication.java
+│   ├── java
+│   │   └── com.ryanmiranda.financas_on
+│   │       ├── controller
+│   │       ├── DTOs
+│   │       ├── infra
+│   │       ├── model
+│   │       ├── repository
+│   │       ├── service
+│   │       └── FinancasOnApplication
+│   │
 │   └── resources
-│       ├── db/migration    # Scripts versionados do Flyway
+│       ├── db
+│       │   └── migration
 │       └── application.properties
-└── test                    # Estrutura inicial de testes
+│
+└── test
 ```
 
-## Evolução do projeto
+---
 
-- [x] Configuração inicial com Spring Boot e MySQL.
-- [x] CRUD de usuários.
-- [x] CRUD de categorias.
-- [x] CRUD de transações.
-- [x] Paginação.
-- [x] Filtros por mês, ano, categoria, tipo e valores.
-- [x] Cálculo de receitas, despesas e saldo final.
-- [ ] Tratamento global de exceções.
-- [ ] Spring Security e JWT.
-- [ ] Documentação com Swagger / OpenAPI.
-- [ ] Testes unitários e de integração.
-- [ ] Docker e Docker Compose.
-- [ ] Deploy em nuvem.
+# 📈 Roadmap
 
-## Competências demonstradas
+* ✅ CRUD Usuários
+* ✅ CRUD Categorias
+* ✅ CRUD Transações
+* ✅ Paginação
+* ✅ Filtros
+* ✅ DTOs
+* ✅ ResponseEntity
+* ✅ Tratamento Global de Erros
+* ⏳ Spring Security
+* ⏳ JWT
+* ⏳ BCrypt
+* ⏳ Swagger / OpenAPI
+* ⏳ Testes Unitários
+* ⏳ Docker
+* ⏳ Docker Compose
+* ⏳ Deploy em Nuvem
 
-Este projeto reúne competências relevantes para desenvolvimento back-end Java: modelagem relacional, construção de APIs REST, arquitetura em camadas, validação, persistência com JPA, consultas com JPQL, paginação, regras de negócio financeiro e versionamento de banco de dados.
+---
 
-## Autor
+# 💡 Competências Demonstradas
 
-Desenvolvido por **Ryan Miranda Barbosa**.
+* Java
+* Spring Boot
+* Spring MVC
+* Spring Data JPA
+* Hibernate
+* REST API
+* Arquitetura em Camadas
+* DTO Pattern
+* JPQL
+* Paginação
+* Validação
+* Tratamento Global de Erros
+* ResponseEntity
+* Flyway
+* MySQL
+* Modelagem Relacional
+* Regras de Negócio
+* Versionamento de Banco
 
-Se o projeto foi útil para você, considere deixar uma ⭐ no repositório.
+---
+
+# 👨‍💻 Autor
+
+**Ryan Miranda Barbosa**
+
+⭐ Se este projeto foi útil para você, considere deixar uma estrela no repositório!
