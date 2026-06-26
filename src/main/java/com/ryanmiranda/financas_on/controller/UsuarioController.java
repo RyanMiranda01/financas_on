@@ -1,6 +1,7 @@
 package com.ryanmiranda.financas_on.controller;
 
 import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.AtualizacaoUsuario;
+import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.DetalhamentoUsuario;
 import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.ListarDadosUsuario;
 import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.CadastroUsuario;
 import com.ryanmiranda.financas_on.service.UsuarioService;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 
 @RestController
@@ -24,49 +26,42 @@ public class UsuarioController {
 
     @PostMapping("cadastrar")
     @Transactional
-    public ResponseEntity<String> cadastrarUsuario(@RequestBody @Valid CadastroUsuario dadosCadastroUsuario){
-        if(usuarioService.cadastrarUsuario(dadosCadastroUsuario)) {
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Usuário cadastrado com sucesso!");
-        }else{
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Email já cadastrado");
-        }
+    public ResponseEntity cadastrarUsuario(@RequestBody @Valid CadastroUsuario dadosCadastroUsuario, UriComponentsBuilder uriComponentsBuilder){
+       var usuario = usuarioService.cadastrarUsuario(dadosCadastroUsuario);
+       var uri = uriComponentsBuilder.path("financason/usuario/cadastrar/{id}").buildAndExpand(usuario.getId()).toUri();
+
+       return ResponseEntity.created(uri).body(new DetalhamentoUsuario(usuario));
     }
 
 
     @GetMapping("listar")
-    public Page<ListarDadosUsuario> listarUsuarios(Pageable pageable){
-        return usuarioService.listarUsuarios(pageable);
+    public ResponseEntity<Page<ListarDadosUsuario>> listarUsuarios(Pageable pageable){
+        var u = usuarioService.listarUsuarios(pageable);
+        return ResponseEntity.ok(u);
     }
 
     @GetMapping("listar/{id}")
-    public ListarDadosUsuario listarDadosUsuariosId(@PathVariable Long id){
-       return usuarioService.listarUsuariosId(id);
+    public ResponseEntity listarDadosUsuariosId(@PathVariable Long id){
+        var u = usuarioService.listarUsuariosId(id);
+       return ResponseEntity.ok(u);
 
     }
 
     @PutMapping("editar/{id}")
     @Transactional
-    public ResponseEntity<String> editarUsuario(@PathVariable Long id, @RequestBody @Valid AtualizacaoUsuario dadoAtualizacao){
+    public ResponseEntity editarUsuario(@PathVariable Long id, @RequestBody @Valid AtualizacaoUsuario dadoAtualizacao){
 
-        if(usuarioService.atualizarUsuario(id, dadoAtualizacao)) {
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Usuário aualizado com sucesso!");
-        }else{
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Email já cadastrado ou Usuario inexistente");
-        }
+        var usuario = usuarioService.atualizarUsuario(id, dadoAtualizacao);
+
+        return ResponseEntity.ok(usuario);
+
     }
 
     @DeleteMapping("deletar/{id}")
     @Transactional
-    public void deletarUsuario(@PathVariable Long id){
+    public ResponseEntity deletarUsuario(@PathVariable Long id){
         usuarioService.deletarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 
 

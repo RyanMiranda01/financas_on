@@ -2,6 +2,7 @@ package com.ryanmiranda.financas_on.service;
 
 import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.AtualizacaoUsuario;
 import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.CadastroUsuario;
+import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.DetalhamentoUsuario;
 import com.ryanmiranda.financas_on.DTOs.UsuarioDTO.ListarDadosUsuario;
 import com.ryanmiranda.financas_on.model.Usuario;
 import com.ryanmiranda.financas_on.repository.UsuarioRepository;
@@ -17,13 +18,14 @@ public class UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    public boolean cadastrarUsuario(CadastroUsuario dadosCadastroUsuario) {
+    public Usuario cadastrarUsuario(CadastroUsuario dadosCadastroUsuario) {
 
         if (usuarioRepository.existsByEmail(dadosCadastroUsuario.email())) {
-            return false;
+            throw new RuntimeException("Usuário não cadastrado");
         } else {
-            usuarioRepository.save(new Usuario(dadosCadastroUsuario));
-            return true;
+            var user = new Usuario(dadosCadastroUsuario);
+            usuarioRepository.save(user);
+            return user;
         }
     }
 
@@ -31,9 +33,9 @@ public class UsuarioService {
         return usuarioRepository.findAll(pagina).map(ListarDadosUsuario::new);
     }
 
-    public ListarDadosUsuario listarUsuariosId(Long id) {
-        return usuarioRepository.findById(id).map(ListarDadosUsuario::new)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    public DetalhamentoUsuario listarUsuariosId(Long id) {
+        var user = new DetalhamentoUsuario(usuarioRepository.findById(id).get());
+        return user;
     }
 
 

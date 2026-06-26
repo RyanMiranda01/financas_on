@@ -13,8 +13,6 @@ public record CadastroCategoria(
          @NotNull
          Tipo tipo,
          @NotNull
-        Long usuarioId,
-        @NotNull
-        LocalDate data
+        Long usuarioId
 ) {
 }

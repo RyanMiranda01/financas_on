@@ -1,6 +1,7 @@
 package com.ryanmiranda.financas_on.controller;
 
 
+import com.ryanmiranda.financas_on.DTOs.categoriaDTO.DetalhamentoCategoria;
 import com.ryanmiranda.financas_on.DTOs.categoriaDTO.AtualizacaoCategoria;
 import com.ryanmiranda.financas_on.DTOs.categoriaDTO.CadastroCategoria;
 import com.ryanmiranda.financas_on.DTOs.categoriaDTO.ListarCategoria;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("financason/categoria")
@@ -23,50 +25,41 @@ public class CategoriaController {
 
     @PostMapping("cadastrar")
     @Transactional
-    public ResponseEntity<String> cadastrarCategoria(@RequestBody @Valid CadastroCategoria cadastroCategoria) {
+    public ResponseEntity cadastrarCategoria(@RequestBody @Valid CadastroCategoria cadastroCategoria, UriComponentsBuilder uriComponentsBuilder) {
+       var categoria = categoriaService.cadastrarCategoria(cadastroCategoria);
 
-        if (categoriaService.cadastrarCategoria(cadastroCategoria)) {
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Categoria cadastrada com sucesso!");
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Algum erro no cadastro!");
-        }
+        var uri = uriComponentsBuilder.path("financason/categoria/cadastrar/{id}").buildAndExpand(categoria.getId()).toUri();
+
+            return ResponseEntity.created(uri).body(new DetalhamentoCategoria(categoria));
+
     }
 
     @GetMapping("listar")
-    public Page<ListarCategoria> listarCategorias(Pageable pagina) {
-        return categoriaService.listarCategorias(pagina);
+    public ResponseEntity<Page<ListarCategoria>> listarCategorias(Pageable pagina) {
+        var page = categoriaService.listarCategorias(pagina);
+        return ResponseEntity.ok(page);
     }
 
     @GetMapping("listar/{id}")
-    public ListarCategoria listarCategoriaId(@PathVariable Long id) {
-        return categoriaService.listarCategoriaId(id);
+    public ResponseEntity listarCategoriaId(@PathVariable Long id) {
+       var page = categoriaService.listarCategoriaId(id);
+       return ResponseEntity.ok(page);
     }
 
 
     @PutMapping("editar/{id}")
     @Transactional
-    public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody @Valid AtualizacaoCategoria atualizacaoCategoria) {
+    public ResponseEntity editar(@PathVariable Long id, @RequestBody @Valid AtualizacaoCategoria atualizacaoCategoria) {
 
-        if (categoriaService.editarCategoria(id, atualizacaoCategoria)) {
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body("Categoria atualizada com sucesso!");
-        } else {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body("Algum erro na atualização!");
-        }
-
+        var categoria = categoriaService.editarCategoria(id, atualizacaoCategoria);
+        return ResponseEntity.ok(categoria);
 
     }
 
     @DeleteMapping("deletar/{id}")
-    public void deletarCategoria(@PathVariable Long id){
+    public ResponseEntity deletarCategoria(@PathVariable Long id){
          categoriaService.deletarCategoria(id);
+         return ResponseEntity.noContent().build();
     }
 
 

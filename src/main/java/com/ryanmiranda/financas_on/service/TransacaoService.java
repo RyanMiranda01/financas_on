@@ -2,6 +2,7 @@ package com.ryanmiranda.financas_on.service;
 
 import com.ryanmiranda.financas_on.DTOs.TransicoesDTO.AtualizarTransicao;
 import com.ryanmiranda.financas_on.DTOs.TransicoesDTO.CadastrarTransicao;
+import com.ryanmiranda.financas_on.DTOs.TransicoesDTO.DetalhamentoTransacao;
 import com.ryanmiranda.financas_on.DTOs.TransicoesDTO.ListarTransicoes;
 import com.ryanmiranda.financas_on.model.Categoria;
 import com.ryanmiranda.financas_on.model.Tipo;
@@ -29,17 +30,18 @@ public class TransacaoService {
     @Autowired
     CategoriaRepository categoriaRepository;
 
-    public boolean cadastroTransicao(CadastrarTransicao cadastrarTransicao) {
+    public Transacao cadastroTransicao(CadastrarTransicao cadastrarTransicao) {
 
         Usuario usuario = usuarioRepository.getReferenceById(cadastrarTransicao.id_usuario());
         Categoria categoria = categoriaRepository.getReferenceById(cadastrarTransicao.id_categoria());
 
         if(cadastrarTransicao.valor().compareTo(BigDecimal.ZERO) <= 0 || categoria == null || usuario == null || categoria.getUsuario().getId() != usuario.getId()){
-            return false;
+            throw new RuntimeException("Erro ao cadastrar transação");
         }
+        var transicao = new Transacao(cadastrarTransicao, categoria, usuario);
 
-        transacoesRepository.save(new Transacao(cadastrarTransicao, categoria, usuario));
-        return true;
+        transacoesRepository.save(transicao);
+        return transicao;
     }
 
     public boolean atualizarTransicao(Long id, AtualizarTransicao atualizarTransicao) {
@@ -63,9 +65,9 @@ public class TransacaoService {
         return transacoesRepository.findAll(pagina).map(ListarTransicoes::new);
     }
 
-    public ListarTransicoes listarTransicoesId(Long id){
-        return transacoesRepository.findById(id).map(ListarTransicoes::new)
-                .orElseThrow(() -> new RuntimeException("Trasação não encontrado!"));
+    public DetalhamentoTransacao listarTransicoesId(Long id){
+        var detalhamento = new DetalhamentoTransacao(transacoesRepository.findById(id).get());
+        return detalhamento;
     }
 
     public Page<ListarTransicoes> listarTransicoesPorMes(int mes, Pageable pageable){
