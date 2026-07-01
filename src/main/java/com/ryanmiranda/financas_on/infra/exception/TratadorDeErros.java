@@ -1,4 +1,4 @@
-package com.ryanmiranda.financas_on.infra;
+package com.ryanmiranda.financas_on.infra.exception;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
